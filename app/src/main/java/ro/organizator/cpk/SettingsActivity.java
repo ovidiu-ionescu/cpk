@@ -82,6 +82,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 // simple string representation.
                 preference.setSummary(stringValue);
             }
+            // for the destinations we need to restart the main activity
+            if("destinations".equalsIgnoreCase(preference.getKey())) {
+
+            }
+
             return true;
         }
     };
@@ -178,6 +183,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("sms_password"));
             bindPreferenceSummaryToValue(findPreference("open_gate_number"));
             bindPreferenceSummaryToValue(findPreference("permissions"));
+            bindPreferenceSummaryToValue(findPreference("destinations"));
         }
 
         @Override

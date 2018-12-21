@@ -9,34 +9,14 @@
     tools:showIn="@layout/activity_main">
 
     <LinearLayout
+        android:id="@+id/buttonPanel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         >
 
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SMS UMI"
-            android:tag="tel:+00123456789"
-            android:onClick="sms"
-            android:layout_margin="3mm"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:textSize="24sp"
-            />
+        <!-- dial buttons will be rendered here -->
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SMS Huawei"
-            android:tag="tel:+00123456789"
-            android:onClick="sms"
-            android:layout_margin="3mm"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:textSize="24sp"
-            />
     </LinearLayout>
 
 

@@ -29,8 +29,8 @@ public class SmsReceiver extends BroadcastReceiver {
         Bundle extras = intent.getExtras();
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String smsPassword = preferences.getString("sms_password", "Open sesame");
-        String openGateNumber = "tel:" + preferences.getString("open_gate_number", "+31629443779");
+        String smsPassword = preferences.getString("sms_password", "");
+        String openGateNumber = "tel:" + preferences.getString("open_gate_number", "");
 
         StringBuilder messages = new StringBuilder();
 
@@ -53,8 +53,8 @@ public class SmsReceiver extends BroadcastReceiver {
 
                 if (body.equalsIgnoreCase(smsPassword)) {
                     String permissions = settings.getString("permissions", "");
-                    PhoneValidator phoneValidator = new PhoneValidator();
-                    if (phoneValidator.isAllowed(address, permissions)) {
+                    PhoneParser phoneParser = new PhoneParser();
+                    if (phoneParser.isAllowed(address, permissions)) {
                         if (smsOpenGate) {
                             SmsManager smsManager = SmsManager.getDefault();
                             try {

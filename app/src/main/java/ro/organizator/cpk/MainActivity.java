@@ -2,10 +2,13 @@ package ro.organizator.cpk;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -13,13 +16,21 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,12 +95,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static final String open_sesame = "Open sesame";
-//    public static final String phone_number = "tel:+31642228229";
-
     public void sms(View view) {
-        String phoneNumber = view.getTag().toString();
-        String[] buttonText = ((Button) view).getText().toString().split(" ");
+        Destination buttonTag = (Destination) view.getTag();
+        String phoneNumber = buttonTag.getPhoneNumber();
 
         SmsManager smsManager = SmsManager.getDefault();
 
@@ -105,9 +113,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             //You already have permission
             try {
-                smsManager.sendTextMessage(phoneNumber, null, open_sesame, null, null);
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                String smsPassword = preferences.getString("sms_password", "");
+                smsManager.sendTextMessage("tel:" + phoneNumber, null, smsPassword, null, null);
 //                Toast.makeText(this, "Open gate request sent to " + phoneNumber, Toast.LENGTH_LONG ).show();
-                Snackbar.make(view, "Open gate request sent to " + buttonText[buttonText.length - 1], Snackbar.LENGTH_LONG).show(); //.setAction("Action", null).show();
+                Snackbar.make(view, "Open gate request sent to " + buttonTag.getName(), Snackbar.LENGTH_LONG).show(); //.setAction("Action", null).show();
 
             } catch(SecurityException e) {
                 e.printStackTrace();
@@ -132,4 +142,55 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        dialButtons();
+    }
+
+    /**
+     * Add all necessary buttons on the main screen
+     */
+    private void dialButtons() {
+        // add the dial buttons
+        LinearLayout layout = (LinearLayout) findViewById(R.id.buttonPanel);
+
+        if(layout.getChildCount() > 0) {
+            layout.removeAllViews();
+        }
+
+        /*
+         * The only way I found on making a styled button is to inflate some xml resource.
+         * Specifying the style id in constructor does not work even if the JavaDoc suggests it should.
+         */
+        final LayoutInflater inflater = LayoutInflater.from(this);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String destinationPreferences = preferences.getString("destinations", "");
+        final List<Destination> destinations = new PhoneParser().calculateDestinations(destinationPreferences);
+        if(destinations.isEmpty()) {
+            // if no destinations defined complain to the user to define some
+            TextView noDestinations = (TextView) inflater.inflate(R.layout.no_destinations, layout, false);
+            layout.addView(noDestinations);
+        } else {
+            // render a button for each destination
+            for(Destination destination: destinations) {
+                Button button = (Button) inflater.inflate(R.layout.dial_button, layout, false);
+                button.setText("SMS " + destination.getName());
+                button.setTag(destination);
+
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sms(view);
+                    }
+                });
+
+                //add button to the layout
+                layout.addView(button);
+            }
+
+        }
+
+    }
 }
