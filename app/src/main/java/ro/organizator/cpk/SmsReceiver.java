@@ -31,6 +31,7 @@ public class SmsReceiver extends BroadcastReceiver {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String smsPassword = preferences.getString("sms_password", "");
         String openGateNumber = "tel:" + preferences.getString("open_gate_number", "");
+        String smsConfirmationMessage = preferences.getString("confirmation_message", "");
 
         StringBuilder messages = new StringBuilder();
 
@@ -55,6 +56,14 @@ public class SmsReceiver extends BroadcastReceiver {
                     String permissions = settings.getString("permissions", "");
                     PhoneParser phoneParser = new PhoneParser();
                     if (phoneParser.isAllowed(address, permissions)) {
+                        if(!smsConfirmationMessage.isEmpty()) {
+                            SmsManager smsManager = SmsManager.getDefault();
+                            try {
+                                smsManager.sendTextMessage("tel:" + address, null, smsConfirmationMessage, null, null);
+                            } catch (SecurityException se) {
+                                Toast.makeText(context, "Security Exception: \n" + se.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
                         if (smsOpenGate) {
                             SmsManager smsManager = SmsManager.getDefault();
                             try {
@@ -64,7 +73,6 @@ public class SmsReceiver extends BroadcastReceiver {
                                 Toast.makeText(context, "Security Exception: \n" + se.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         } else {
-
                             Intent mIntent = new Intent(Intent.ACTION_CALL);
                             mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             mIntent.setData(Uri.parse(openGateNumber));

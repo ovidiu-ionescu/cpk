@@ -180,10 +180,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
+            bindPreferenceSummaryToValue(findPreference("destinations"));
+            bindPreferenceSummaryToValue(findPreference("confirmation_message"));
             bindPreferenceSummaryToValue(findPreference("sms_password"));
             bindPreferenceSummaryToValue(findPreference("open_gate_number"));
             bindPreferenceSummaryToValue(findPreference("permissions"));
-            bindPreferenceSummaryToValue(findPreference("destinations"));
         }
 
         @Override

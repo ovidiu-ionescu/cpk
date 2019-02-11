@@ -28,11 +28,15 @@
         an SMS with the body equal to the password is received
     </string>
 
+    <string name="pref_title_confirmation_message">Confirmation message</string>
+    <string name="pref_description_confirmation_message">SMS text to send back for confirmation if
+        password and sending phone number are accepted</string>
+
     <string name="pref_title_sms_password">Sms password</string>
     <string name="pref_default_sms_password">Default Password</string>
 
     <string name="pref_title_open_gate_number">Open gate number</string>
-    <string name="pref_default_open_gate_number">tel:+00123456789</string>
+    <string name="pref_default_open_gate_number">+00123456789</string>
 
     <string name="pref_title_gym_members">Gym members</string>
 

@@ -23,6 +23,14 @@
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
     <EditTextPreference
+        android:inputType="textMultiLine"
+        android:key="confirmation_message"
+        android:maxLength="160"
+        android:summary="@string/pref_description_confirmation_message"
+        android:title="@string/pref_title_confirmation_message"
+        />
+
+    <EditTextPreference
         android:defaultValue="@string/pref_default_sms_password"
         android:inputType="text"
         android:key="sms_password"
