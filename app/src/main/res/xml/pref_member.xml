@@ -1,0 +1,19 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:inputType="textMultiLine"
+        android:key="destinations"
+        android:title="@string/pref_destination_numbers"
+        android:summary="@string/pref_description_destination_numbers"
+        />
+
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_sms_password"
+        android:inputType="text"
+        android:key="sms_password"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_sms_password" />
+
+</PreferenceScreen>

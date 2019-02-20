@@ -97,8 +97,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void sms(View view) {
         Destination buttonTag = (Destination) view.getTag();
-        String phoneNumber = buttonTag.getPhoneNumber();
+        sms(buttonTag);
+    }
 
+    /**
+     * Sends a password SMS to a destination
+     * @param destination
+     */
+    private void sms(Destination destination) {
+        String phoneNumber = destination.getPhoneNumber();
         SmsManager smsManager = SmsManager.getDefault();
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
@@ -116,12 +123,25 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                 String smsPassword = preferences.getString("sms_password", "");
                 smsManager.sendTextMessage("tel:" + phoneNumber, null, smsPassword, null, null);
-//                Toast.makeText(this, "Open gate request sent to " + phoneNumber, Toast.LENGTH_LONG ).show();
-                Snackbar.make(view, "Open gate request sent to " + buttonTag.getName(), Snackbar.LENGTH_LONG).show(); //.setAction("Action", null).show();
+                Toast.makeText(this, "Open gate request sent to " + destination.getName(), Toast.LENGTH_SHORT ).show();
+//                Snackbar.make(findViewById(R.id.buttonPanel), "Open gate request sent to " + destination.getName(), Snackbar.LENGTH_LONG).show(); //.setAction("Action", null).show();
 
             } catch(SecurityException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    /**
+     * SMS all numbers in the destination
+     * @param view
+     */
+    public void smsAll(View view) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String destinationPreferences = preferences.getString("destinations", "");
+        final List<Destination> destinations = new PhoneParser().calculateDestinations(destinationPreferences);
+        for(Destination destination: destinations) {
+            sms(destination);
         }
     }
 
@@ -173,23 +193,35 @@ public class MainActivity extends AppCompatActivity {
             TextView noDestinations = (TextView) inflater.inflate(R.layout.no_destinations, layout, false);
             layout.addView(noDestinations);
         } else {
-            // render a button for each destination
-            for(Destination destination: destinations) {
-                Button button = (Button) inflater.inflate(R.layout.dial_button, layout, false);
-                button.setText("SMS " + destination.getName());
-                button.setTag(destination);
+            if(UserModeKt.isSuperUser()) {
+                // render a button for each destination
+                for (Destination destination : destinations) {
+                    Button button = (Button) inflater.inflate(R.layout.dial_button, layout, false);
+                    button.setText("SMS " + destination.getName());
+                    button.setTag(destination);
 
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        sms(view);
-                    }
-                });
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            sms(view);
+                        }
+                    });
 
-                //add button to the layout
-                layout.addView(button);
+                    //add button to the layout
+                    layout.addView(button);
+                }
             }
 
+            // add one more button for all destinations
+            Button button = (Button) inflater.inflate(R.layout.dial_button, layout, false);
+            button.setText("Open Gate");
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    smsAll(view);
+                }
+            });
+            layout.addView(button);
         }
 
     }
