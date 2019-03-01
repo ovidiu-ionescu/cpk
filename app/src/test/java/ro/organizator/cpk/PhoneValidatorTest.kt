@@ -46,5 +46,12 @@ class PhoneValidatorTest: StringSpec() {
             l[2].name shouldBe ""
             l[2].phoneNumber shouldBe "+31403749373"
         }
+
+        "Use Dutch prefix for mobiles" {
+            val permissions = "+31 6 13358857 Arnold \n" + " 0677935827 Croton +31-403-749-373"
+            val l = phoneValidator.calculateDestinations(permissions)
+            phoneValidator.isAllowed("+31613358857", permissions) shouldBe true
+            phoneValidator.isAllowed("0613358857", permissions) shouldBe true
+        }
     }
 }

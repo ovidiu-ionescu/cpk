@@ -35,8 +35,9 @@ class PhoneParser {
      * present
      */
     fun isAllowed(phone: String, permissions: String): Boolean {
+        val normalizedPhone = if(phone.startsWith("06")) "+316" + phone.substring(2) else phone
         return phonePattern.findAll(permissions).any {
-            it.value.replace(phoneSeparator, "") == phone
+            it.value.replace(phoneSeparator, "") == normalizedPhone
         }
     }
 }
