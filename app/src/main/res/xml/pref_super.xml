@@ -31,6 +31,14 @@
         />
 
     <EditTextPreference
+        android:inputType="number"
+        android:key="confirmation_delay"
+        android:maxLength="5"
+        android:summary="Delay after confirmation message (ms)"
+        android:title="Confirmation delay"
+        />
+
+    <EditTextPreference
         android:defaultValue="@string/pref_default_sms_password"
         android:inputType="text"
         android:key="sms_password"

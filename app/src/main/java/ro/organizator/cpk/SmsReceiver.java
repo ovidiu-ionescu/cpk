@@ -32,6 +32,8 @@ public class SmsReceiver extends BroadcastReceiver {
         String smsPassword = preferences.getString("sms_password", "");
         String openGateNumber = "tel:" + preferences.getString("open_gate_number", "");
         String smsConfirmationMessage = preferences.getString("confirmation_message", "");
+        String smsConfirmationDelayString = preferences.getString("confirmation_delay", "");
+        Long smsConfirmationDelay = smsConfirmationDelayString.isEmpty() ? 0 : Long.parseLong(smsConfirmationDelayString);
 
         StringBuilder messages = new StringBuilder();
 
@@ -62,6 +64,13 @@ public class SmsReceiver extends BroadcastReceiver {
                                 smsManager.sendTextMessage("tel:" + address, null, smsConfirmationMessage, null, null);
                             } catch (SecurityException se) {
                                 Toast.makeText(context, "Security Exception: \n" + se.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                            if(smsConfirmationDelay > 0) {
+                                try {
+                                    Thread.sleep(smsConfirmationDelay);
+                                } catch (InterruptedException ie) {
+                                    Toast.makeText(context, "Security Exception: \n" + ie.getMessage(), Toast.LENGTH_LONG).show();
+                                }
                             }
                         }
                         if (smsOpenGate) {

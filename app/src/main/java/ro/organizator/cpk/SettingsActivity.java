@@ -190,6 +190,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("destinations"));
             bindPreferenceSummaryToValue(findPreference("confirmation_message"));
+            bindPreferenceSummaryToValue(findPreference("confirmation_delay"));
             bindPreferenceSummaryToValue(findPreference("sms_password"));
             bindPreferenceSummaryToValue(findPreference("open_gate_number"));
             bindPreferenceSummaryToValue(findPreference("permissions"));
